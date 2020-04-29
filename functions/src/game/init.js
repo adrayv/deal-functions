@@ -2,7 +2,7 @@ const uniqid = require('uniqid');
 const { generateDeck } = require('./utils/deck');
 const { shuffle } = require('./utils/array');
 
-const functions = {
+module.exports = {
   createInitialGameState(initialPlayer) {
     const initialPlayerId = `${initialPlayer}-${uniqid()}`;
     return {
@@ -24,7 +24,3 @@ const functions = {
     };
   },
 };
-
-Object.keys(functions).forEach(functionName => {
-  exports[functionName] = functions[functionName];
-});
