@@ -59,7 +59,7 @@ function reducer(state, action) {
   switch (action.type) {
     case actionTypes.joinGame: {
       const { player } = action.data;
-      const newState = { ...state };
+      const newState = Object.assign({}, state);
       const { status, order } = newState;
       if (
         (status === gameStatuses.pending || status === gameStatuses.ready) &&
@@ -76,55 +76,67 @@ function reducer(state, action) {
     }
     case actionTypes.playCard: {
       const { playerId, card } = action.data;
-      const newState = { ...state };
+      const newState = Object.assign({}, state);
       const { order, turn, players } = newState;
 
       if (playerId === order[turn]) {
-        if (card.type === 'cash') {
-          newState.players[playerId].cash.push(card);
-        } else if (card.type === 'property') {
-          const targetSetIndex = players[playerId].sets.findIndex(
-            set => set.color === card.color && !set.complete
-          );
-          if (targetSetIndex !== -1) {
-            newState.players[playerId].sets[targetSetIndex].cards.push(card);
-            if (
-              setIsComplete(newState.players[playerId].sets[targetSetIndex])
-            ) {
-              newState.players[playerId].sets[targetSetIndex].complete = true;
+        switch (card.type) {
+          case 'cash': {
+            newState.players[playerId].cash.push(card);
+            break;
+          }
+          case 'property': {
+            const targetSetIndex = players[playerId].sets.findIndex(
+              set => set.color === card.color && !set.complete
+            );
+            if (targetSetIndex !== -1) {
+              newState.players[playerId].sets[targetSetIndex].cards.push(card);
+              if (
+                setIsComplete(newState.players[playerId].sets[targetSetIndex])
+              ) {
+                newState.players[playerId].sets[targetSetIndex].complete = true;
+              }
+            } else {
+              newState.players[playerId].sets.push({
+                color: card.color,
+                complete: false,
+                cards: [card],
+              });
             }
-          } else {
-            newState.players[playerId].sets.push({
-              color: card.color,
-              complete: false,
-              cards: [card],
-            });
+            if (playerWon(playerId, newState)) {
+              newState.winner = playerId;
+            }
+            break;
           }
-          if (playerWon(playerId, newState)) {
-            newState.winner = playerId;
+          default: {
+            // continue
           }
-        } else {
         }
         newState.players[playerId].hand = players[playerId].hand.filter(
           ({ id: cid }) => cid !== card.id
         );
         newState.cardsPlayed++;
         if (newState.cardsPlayed >= 3) {
-          return reducer(newState, actionCreators.endTurn(playerId));
+          return reducer(newState, {
+            type: actionTypes.endTurn,
+            data: {
+              playerId,
+            },
+          });
         }
-        return newState;
       }
+      return newState;
     }
     case actionTypes.drawCard: {
       const { playerId } = action.data;
-      const newState = { ...state };
+      const newState = Object.assign({}, state);
       const drawnCard = newState.deck.pop();
       newState.players[playerId].hand.push(drawnCard);
       return newState;
     }
     case actionTypes.discardCard: {
       const { playerId, card } = action.data;
-      const newState = { ...state };
+      const newState = Object.assign({}, state);
       newState.players[playerId].hand = newState.players[playerId].hand.filter(
         ({ id: cid }) => cid !== card.id
       );
@@ -132,7 +144,7 @@ function reducer(state, action) {
       return newState;
     }
     case actionTypes.endTurn: {
-      const newState = { ...state };
+      const newState = Object.assign({}, state);
       newState.turn =
         newState.turn < newState.order.length - 1 ? newState.turn + 1 : 0;
       newState.players[newState.order[newState.turn]].hand.push(
