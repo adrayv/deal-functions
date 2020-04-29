@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 const types = {
   cash: {
     1: 6,
@@ -169,29 +171,28 @@ const types = {
 };
 
 module.exports.generateDeck = () => {
-  return Object.entries(types)
-    .flatMap(([type, data]) => {
-      if (type === 'cash') {
-        return Object.entries(data).flatMap(([denomination, count]) => {
-          return [...new Array(count)].map((_, i) => {
-            return {
-              id: `cash-val-${denomination}-${i}`,
-              type: 'cash',
-              value: Number(denomination),
-            };
-          });
+  const makeTypes = ([type, data]) => {
+    if (type === 'cash') {
+      return Object.entries(data).map(([denomination, count]) => {
+        return [...new Array(count)].map((_, i) => {
+          return {
+            id: `cash-val-${denomination}-${i}`,
+            type: 'cash',
+            value: Number(denomination),
+          };
         });
-      } else if (type === 'properties') {
-        return Object.entries(data.regular).flatMap(([color, propData]) => {
-          return propData.names.map(name => ({
-            id: `property-${color}-${name}`,
-            type: 'property',
-            name,
-            color,
-            value: propData.value,
-          }));
-        });
-      } else return null;
-    })
-    .filter(e => e);
+      });
+    } else if (type === 'properties') {
+      return Object.entries(data.regular).map(([color, propData]) => {
+        return propData.names.map(name => ({
+          id: `property-${color}-${name}`,
+          type: 'property',
+          name,
+          color,
+          value: propData.value,
+        }));
+      });
+    } else return null;
+  };
+  return _.flatMapDeep(Object.entries(types), makeTypes).filter(e => e);
 };
