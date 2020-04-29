@@ -1,5 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const actionCreator = require('./game/actionCreator');
+const { reducer } = require('./game/core');
 
 module.exports = functions.firestore
   .document('commands/{commandId}')
@@ -11,9 +13,8 @@ module.exports = functions.firestore
         const gameState = (
           await db.collection('games').doc(gameId).get()
         ).data();
-        const newState = gameState;
-        // reducer(gameState, { type, payload });
-        console.log('NEW STATE', newState, type, payload);
+        const newState = reducer(gameState, actionCreator(type, payload));
+        await db.collection('games').doc(gameId).set(newState);
       } else {
         console.log('SNAP', snap.data());
       }
