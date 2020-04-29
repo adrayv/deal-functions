@@ -63,12 +63,12 @@ function reducer(state, action) {
       const { status, order } = newState;
       if (
         (status === gameStatuses.pending || status === gameStatuses.ready) &&
-        order < config.maxPlayers
+        order.length < config.maxPlayers
       ) {
         const newPlayer = Player(player);
         newState.players[newPlayer.id] = newPlayer;
         newState.order.push(newPlayer.id);
-        if (newState.order > 1) {
+        if (newState.order.length > 1) {
           newState.status = gameStatuses.ready;
         }
       }
