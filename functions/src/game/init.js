@@ -1,6 +1,6 @@
 const uniqid = require('uniqid');
-const { generateDeck } = require('./utils/deck');
-const { shuffle } = require('./utils/array');
+const { generateDeck } = require('../utils/deck');
+const { shuffle } = require('../utils/array');
 
 module.exports = {
   createInitialGameState(initialPlayer) {
