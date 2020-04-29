@@ -14,7 +14,7 @@ module.exports = {
       players: {
         [firstPlayer.id]: firstPlayer,
       },
-      order: [initialPlayerId],
+      order: [firstPlayer.id],
       winner: null,
       status: gameStatuses.pending,
       created_at: new Date(),
