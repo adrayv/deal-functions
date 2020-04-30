@@ -1,5 +1,3 @@
-const { Player } = require('./entities');
-
 const config = {
   maxPlayers: 4,
 };
@@ -103,8 +101,7 @@ function reducer(state, action) {
         (status === gameStatuses.pending || status === gameStatuses.ready) &&
         order.length < config.maxPlayers
       ) {
-        const newPlayer = Player(player);
-        newState.players[newPlayer.id] = newPlayer;
+        newState.players[player.id] = player;
         newState.order.push(newPlayer.id);
         if (newState.order.length > 1) {
           newState.status = gameStatuses.ready;
