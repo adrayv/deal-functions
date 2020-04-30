@@ -20,6 +20,43 @@ const actionTypes = {
   endTurn: '@end-turn',
 };
 
+const actionCreators = {
+  playCard(playerId, card) {
+    return {
+      type: actionTypes.playCard,
+      data: {
+        playerId,
+        card,
+      },
+    };
+  },
+  drawCard(playerId) {
+    return {
+      type: actionTypes.drawCard,
+      data: {
+        playerId,
+      },
+    };
+  },
+  discardCard(playerId, card) {
+    return {
+      type: actionTypes.discardCard,
+      data: {
+        playerId,
+        card,
+      },
+    };
+  },
+  endTurn(playerId) {
+    return {
+      type: actionTypes.endTurn,
+      data: {
+        playerId,
+      },
+    };
+  },
+};
+
 const numToComplete = {
   purple: 3,
   green: 3,
@@ -123,6 +160,7 @@ function reducer(state, action) {
             }
             if (playerWon(playerId, newState)) {
               newState.winner = playerId;
+              newState.status = gameStatuses.done;
             }
             break;
           }
@@ -181,3 +219,4 @@ function reducer(state, action) {
 
 exports.reducer = reducer;
 exports.gameStatuses = gameStatuses;
+exports.actionCreators = actionCreators;
