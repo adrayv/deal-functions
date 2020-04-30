@@ -13,6 +13,7 @@ const gameStatuses = {
 
 const actionTypes = {
   joinGame: '@join-game',
+  startGame: '@start-game',
   playCard: '@play-card',
   drawCard: '@draw-card',
   discardCard: '@discard-card',
@@ -70,6 +71,23 @@ function reducer(state, action) {
         newState.order.push(newPlayer.id);
         if (newState.order.length > 1) {
           newState.status = gameStatuses.ready;
+        }
+      }
+      return newState;
+    }
+    case actionTypes.startGame: {
+      let newState = Object.assign({}, state);
+      if (newState.status === gameStatuses.ready) {
+        newState.status = gameStatuses.inProgress;
+        // Distribute cards
+        for (let i = 0; i < 5; i++) {
+          for (let j = 0; j < newState.order.length; j++) {
+            const playerId = order[j];
+            newState = reducer(newState, {
+              type: actionTypes.drawCard,
+              data: { playerId },
+            });
+          }
         }
       }
       return newState;
