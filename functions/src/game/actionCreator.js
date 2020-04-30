@@ -13,6 +13,9 @@ module.exports = function (type, payload) {
         return badAction;
       }
     }
+    case '@start-game': {
+      return { type };
+    }
     default: {
       return badAction;
     }
