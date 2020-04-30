@@ -82,7 +82,7 @@ function reducer(state, action) {
         // Distribute cards
         for (let i = 0; i < 5; i++) {
           for (let j = 0; j < newState.order.length; j++) {
-            const playerId = order[j];
+            const playerId = newState.order[j];
             newState = reducer(newState, {
               type: actionTypes.drawCard,
               data: { playerId },
