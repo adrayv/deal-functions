@@ -53,6 +53,14 @@ const actionCreators = {
       },
     };
   },
+  joinGame(player) {
+    return {
+      type: actionTypes.joinGame,
+      data: {
+        player,
+      },
+    };
+  },
 };
 
 const numToComplete = {
@@ -102,7 +110,7 @@ function reducer(state, action) {
         order.length < config.maxPlayers
       ) {
         newState.players[player.id] = player;
-        newState.order.push(newPlayer.id);
+        newState.order.push(player.id);
         if (newState.order.length > 1) {
           newState.status = gameStatuses.ready;
         }

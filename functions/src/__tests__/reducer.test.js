@@ -1,4 +1,36 @@
 const { reducer, actionCreators, gameStatuses } = require('../game/core');
+const { Player } = require('../game/entities');
+
+test('joining a game', () => {
+  const state = {
+    turn: 0,
+    status: gameStatuses.pending,
+    cardsPlayed: 0,
+    deck: [],
+    discard: [],
+    players: {
+      p1: {
+        properties: [],
+        sets: [],
+        cash: [],
+        hand: [],
+      },
+      p2: {
+        properties: [],
+        cash: [],
+        sets: [],
+        hand: [],
+      },
+    },
+    order: ['p2', 'p1'],
+    winner: null,
+  };
+  const newPlayer = Player('p3');
+  const newState = reducer(state, actionCreators.joinGame(newPlayer));
+  expect(Boolean(newState.players[newPlayer.id])).toBe(true);
+  expect(newState.order[2]).toBe(newPlayer.id);
+  expect(newState.status).toBe(gameStatuses.ready);
+});
 
 test('playing a cash card', () => {
   const state = {
