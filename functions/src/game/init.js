@@ -1,7 +1,6 @@
 const { generateDeck } = require('../utils/deck');
 const { shuffle } = require('../utils/array');
 const { gameStatuses } = require('./core');
-const { Player } = require('./entities');
 
 module.exports = {
   createInitialGameState(initialPlayer) {

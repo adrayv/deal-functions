@@ -5,12 +5,13 @@ const { Player } = require('./game/entities');
 
 module.exports = functions.https.onRequest(async (req, res) => {
   try {
+    if (req.method !== 'POST') {
+      throw new Error('Resource not found');
+    }
     const db = admin.firestore();
-    const { player } = req.query;
+    const { player } = req.body;
     if (!player) {
-      throw new Error(
-        'attach the name of the initial player as a query parameter i.e. ?player=john'
-      );
+      throw new Error('Missing body arg, player');
     }
     const newPlayer = Player(player);
     const docRef = await db
