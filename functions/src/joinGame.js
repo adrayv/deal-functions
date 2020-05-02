@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const { Player } = require('./game/entities');
+const { reducer, actionCreators } = require('./game/core');
 const cors = require('cors')({
   origin: true,
 });
@@ -16,11 +17,17 @@ module.exports = functions.https.onRequest((req, res) => {
         if (gameId && player) {
           const newPlayer = Player(player);
           const db = admin.firestore();
-          await db.collection('commands').add({
-            gameId,
-            type: '@join-game',
-            payload: { player: newPlayer },
-          });
+
+          const gameState = (
+            await db.collection('games').doc(gameId).get()
+          ).data();
+
+          const newState = reducer(
+            gameState,
+            actionCreators.joinGame(newPlayer)
+          );
+          await db.collection('games').doc(gameId).set(newState);
+
           return res
             .status(200)
             .send({ playerId: newPlayer.id, playerName: newPlayer.name });
