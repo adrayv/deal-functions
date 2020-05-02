@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const init = require('./game/init');
 const { Player } = require('./game/entities');
 const cors = require('cors')({
   origin: true,
 });
+const db = require('./services/db');
 
 module.exports = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
@@ -13,7 +13,6 @@ module.exports = functions.https.onRequest((req, res) => {
         if (req.method !== 'POST') {
           throw new Error('Resource not found');
         }
-        const db = admin.firestore();
         const { player } = req.body;
         if (!player) {
           throw new Error('Missing body arg, player');

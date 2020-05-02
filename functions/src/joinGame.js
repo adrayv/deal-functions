@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const { Player } = require('./game/entities');
 const { reducer, actionCreators } = require('./game/core');
 const cors = require('cors')({
   origin: true,
 });
+const db = require('./services/db');
 
 module.exports = functions.https.onRequest((req, res) => {
   return cors(req, res, () => {
@@ -16,7 +16,6 @@ module.exports = functions.https.onRequest((req, res) => {
         const { gameId, player } = req.body;
         if (gameId && player) {
           const newPlayer = Player(player);
-          const db = admin.firestore();
 
           const gameState = (
             await db.collection('games').doc(gameId).get()

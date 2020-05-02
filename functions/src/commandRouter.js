@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const actionCreator = require('./game/actionCreator');
 const { reducer } = require('./game/core');
+const db = require('./services/db');
 
 module.exports = functions.firestore
   .document('commands/{commandId}')
@@ -9,7 +9,6 @@ module.exports = functions.firestore
     try {
       const { gameId, type, payload } = snap.data();
       if (gameId) {
-        const db = admin.firestore();
         const gameState = (
           await db.collection('games').doc(gameId).get()
         ).data();

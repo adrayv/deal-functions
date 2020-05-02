@@ -1,5 +1,5 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+const db = require('./services/db');
 
 module.exports = functions.https.onRequest(async (req, res) => {
   try {
@@ -8,7 +8,6 @@ module.exports = functions.https.onRequest(async (req, res) => {
     }
     const { gameId, type, payload } = req.body;
     if (gameId && type && payload) {
-      const db = admin.firestore();
       await db.collection('commands').add({ gameId, type, payload });
     } else {
       throw new Error('Invalid body');
